@@ -22,7 +22,10 @@ const App = () => {
     },
   ];
   return (
-    <Dropdown options={options} selection={selection} onSelect={handleSelect} />
+    <div className="flex">
+      <Dropdown options={options} value={selection} onChange={handleSelect} />
+      <Dropdown options={options} value={selection} onChange={handleSelect} />
+    </div>
   );
 };
 
