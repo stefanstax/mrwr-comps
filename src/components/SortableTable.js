@@ -1,47 +1,13 @@
-import { useState } from "react";
 import Table from "./Table";
 import { GoArrowSmallDown, GoArrowSmallUp } from "react-icons/go";
+import useSort from "../hooks/use-sort";
 
 const SortableTable = (props) => {
-  const [sortOrder, setSortOrder] = useState(null);
-  const [sortBy, setSortyBy] = useState(null);
   const { config, data } = props;
-
-  const handleClick = (label) => {
-    if (sortBy && label !== sortBy) {
-      setSortOrder("asc");
-      setSortyBy(label);
-      return;
-    }
-
-    if (sortOrder === null) {
-      setSortOrder("asc");
-      setSortyBy(label);
-    } else if (sortOrder === "asc") {
-      setSortOrder("desc");
-      setSortyBy(label);
-    } else if (sortOrder === "desc") {
-      setSortOrder(null);
-      setSortyBy(null);
-    }
-  };
-
-  let sortedData = data;
-  if (sortOrder && sortBy) {
-    const { sortValue } = config.find((column) => column.label === sortBy);
-    sortedData = [...data].sort((a, b) => {
-      const valueA = sortValue(a);
-      const valueB = sortValue(b);
-
-      const reverseOrder = sortOrder === "asc" ? 1 : -1;
-
-      if (typeof valueA === "string") {
-        return valueA.localeCompare(valueB) * reverseOrder;
-      } else {
-        return (valueA - valueB) * reverseOrder;
-      }
-    });
-  }
+  const { sortBy, sortOrder, sortedData, setSortColumn } = useSort(
+    config,
+    data
+  );
 
   const getIcons = (label, sortBy, sortOrder) => {
     if (label !== sortBy) {
@@ -75,7 +41,7 @@ const SortableTable = (props) => {
       header: () => (
         <th
           className="flex justify-between items-center"
-          onClick={() => handleClick(column.label)}
+          onClick={() => setSortColumn(column.label)}
         >
           {getIcons(column.label, sortBy, sortOrder)}
           {column.label}
